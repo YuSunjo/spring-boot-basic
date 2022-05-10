@@ -1,5 +1,6 @@
 package com.example.springbasic.order;
 
+import com.example.springbasic.annotation.MainDiscountPolicy;
 import com.example.springbasic.discount.DiscountPolicy;
 import com.example.springbasic.member.Member;
 import com.example.springbasic.member.MemberRepository;
@@ -26,7 +27,7 @@ public class OrderServiceImpl implements OrderService{
      * 빈을 조회할 때는 type으로 조회
      * 같은 타입이 2개 이상일 경우 필드 명 매칭이 가능함 (rateDiscountPolicy)
      */
-    public OrderServiceImpl(MemberRepository memberRepository, @Qualifier("mainDiscountPolicy") DiscountPolicy rateDiscountPolicy) {
+    public OrderServiceImpl(MemberRepository memberRepository, @MainDiscountPolicy DiscountPolicy rateDiscountPolicy) {
         this.memberRepository = memberRepository;
         this.discountPolicy = rateDiscountPolicy;
     }
