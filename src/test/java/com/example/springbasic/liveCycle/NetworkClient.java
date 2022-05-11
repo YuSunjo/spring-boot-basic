@@ -3,6 +3,9 @@ package com.example.springbasic.liveCycle;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 public class NetworkClient {
 
     /**
@@ -35,10 +38,12 @@ public class NetworkClient {
         System.out.println("close = " + url);
     }
 
+    @PostConstruct
     public void init() {
         connect();
     }
 
+    @PreDestroy
     public void close() {
         disconnect();
     }
