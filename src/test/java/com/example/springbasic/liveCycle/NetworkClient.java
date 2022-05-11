@@ -3,7 +3,7 @@ package com.example.springbasic.liveCycle;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
-public class NetworkClient implements InitializingBean, DisposableBean {
+public class NetworkClient {
 
     /**
      * spring 전용 인터페이스
@@ -35,15 +35,12 @@ public class NetworkClient implements InitializingBean, DisposableBean {
         System.out.println("close = " + url);
     }
 
-    @Override
-    public void destroy() throws Exception {
+    public void init() {
+        connect();
+    }
+
+    public void close() {
         disconnect();
     }
 
-    // 초기화 연결 메세지
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        connect();
-        call("초기화 연결 메세지");
-    }
 }
