@@ -12,18 +12,18 @@ import javax.servlet.http.HttpServletRequest;
 public class LogDemoController {
 
     private final LogDemoService logDemoService;
-    private final ObjectProvider<MyLogger> myLoggerObjectProvider;
+    private final MyLogger myLogger;
 
-    public LogDemoController(LogDemoService logDemoService, ObjectProvider<MyLogger> myLoggerObjectProvider) {
+    public LogDemoController(LogDemoService logDemoService, MyLogger myLogger) {
         this.logDemoService = logDemoService;
-        this.myLoggerObjectProvider = myLoggerObjectProvider;
+        this.myLogger = myLogger;
     }
 
     @RequestMapping("log-demo")
     @ResponseBody
     public String logDemo(HttpServletRequest request) {
         String requestUrl = request.getRequestURI();
-        MyLogger myLogger = myLoggerObjectProvider.getObject();
+//        MyLogger myLogger = myLoggerObjectProvider.getObject();
         myLogger.setRequestUrl(requestUrl);
         myLogger.log("controller test");
         logDemoService.log();

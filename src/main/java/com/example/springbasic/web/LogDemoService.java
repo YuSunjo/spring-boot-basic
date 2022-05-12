@@ -7,14 +7,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class LogDemoService {
 
-    private final ObjectProvider<MyLogger> myLoggerObjectProvider;
+    private final MyLogger myLogger;
 
-    public LogDemoService(ObjectProvider<MyLogger> myLoggerObjectProvider) {
-        this.myLoggerObjectProvider = myLoggerObjectProvider;
+    public LogDemoService(MyLogger myLogger) {
+        this.myLogger = myLogger;
     }
 
     public void log() {
-        MyLogger myLogger = myLoggerObjectProvider.getObject();
         myLogger.log("service");
     }
 
