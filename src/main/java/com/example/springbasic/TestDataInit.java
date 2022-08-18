@@ -1,6 +1,6 @@
 package com.example.springbasic;
 
-import com.example.springbasic.mvc_2.domain.item.Item;
+import com.example.springbasic.mvc_2.domain.item.FormItem;
 import com.example.springbasic.mvc_2.domain.item.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -18,8 +18,8 @@ public class TestDataInit {
      */
     @PostConstruct
     public void init() {
-        itemRepository.save(new Item("itemA", 10000, 10));
-        itemRepository.save(new Item("itemB", 20000, 20));
+        itemRepository.save(new FormItem("itemA", 10000, 10));
+        itemRepository.save(new FormItem("itemB", 20000, 20));
     }
 
 }
