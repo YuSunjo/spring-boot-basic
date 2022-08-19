@@ -2,10 +2,12 @@ package com.example.springbasic.mvc_2.domain.validation;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 public class Item {
 
-//    @NotNull(groups = UpdateCheck.class) //수정 요구사항 추가
+    @NotNull(groups = UpdateCheck.class) //수정 요구사항 추가
     private Long id;
 
 //    @NotBlank(groups = {SaveCheck.class, UpdateCheck.class})
