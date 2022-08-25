@@ -1,6 +1,6 @@
 package com.example.springbasic.mvc_2.web.validation;
 
-import com.example.springbasic.mvc_2.domain.validation.Item;
+import com.example.springbasic.mvc_2.domain.validation.ItemV;
 import com.example.springbasic.mvc_2.domain.validation.ValidationItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,44 +24,44 @@ public class ValidationItemControllerV1 {
 
     @GetMapping
     public String items(Model model) {
-        List<Item> items = validationItemRepository.findAll();
-        model.addAttribute("items", items);
+        List<ItemV> itemVS = validationItemRepository.findAll();
+        model.addAttribute("items", itemVS);
         return "validation/v1/items";
     }
 
     @GetMapping("/{itemId}")
     public String item(@PathVariable long itemId, Model model) {
-        Item item = validationItemRepository.findById(itemId);
-        model.addAttribute("item", item);
+        ItemV itemV = validationItemRepository.findById(itemId);
+        model.addAttribute("item", itemV);
         return "validation/v1/item";
     }
 
     @GetMapping("/add")
     public String addForm(Model model) {
-        model.addAttribute("item", new Item());
+        model.addAttribute("item", new ItemV());
         return "validation/v1/addForm";
     }
 
     @PostMapping("/add")
-    public String addItem(@ModelAttribute Item item, RedirectAttributes redirectAttributes, Model model) {
+    public String addItem(@ModelAttribute ItemV itemV, RedirectAttributes redirectAttributes, Model model) {
 
         //검증 오류 결과를 보관
         Map<String, String> errors = new HashMap<>();
 
         //검증 로직
-        if (!StringUtils.hasText(item.getItemName())) {
+        if (!StringUtils.hasText(itemV.getItemName())) {
             errors.put("itemName", "상품 이름은 필수입니다.");
         }
-        if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) {
+        if (itemV.getPrice() == null || itemV.getPrice() < 1000 || itemV.getPrice() > 1000000) {
             errors.put("price", "가격은 1,000 ~ 1,000,000 까지 허용합니다.");
         }
-        if (item.getQuantity() == null || item.getQuantity() >= 9999) {
+        if (itemV.getQuantity() == null || itemV.getQuantity() >= 9999) {
             errors.put("quantity", "수량은 최대 9,999 까지 허용합니다.");
         }
 
         //특정 필드가 아닌 복합 룰 검증
-        if (item.getPrice() != null && item.getQuantity() != null) {
-            int resultPrice = item.getPrice() * item.getQuantity();
+        if (itemV.getPrice() != null && itemV.getQuantity() != null) {
+            int resultPrice = itemV.getPrice() * itemV.getQuantity();
             if (resultPrice < 10000) {
                 errors.put("globalError", "가격 * 수량의 합은 10,000원 이상이어야 합니다. 현재 값 = " + resultPrice);
             }
@@ -75,22 +75,22 @@ public class ValidationItemControllerV1 {
         }
 
         //성공 로직
-        Item savedItem = validationItemRepository.save(item);
-        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        ItemV savedItemV = validationItemRepository.save(itemV);
+        redirectAttributes.addAttribute("itemId", savedItemV.getId());
         redirectAttributes.addAttribute("status", true);
         return "redirect:/validation/v1/items/{itemId}";
     }
 
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
-        Item item = validationItemRepository.findById(itemId);
-        model.addAttribute("item", item);
+        ItemV itemV = validationItemRepository.findById(itemId);
+        model.addAttribute("item", itemV);
         return "validation/v1/editForm";
     }
 
     @PostMapping("/{itemId}/edit")
-    public String edit(@PathVariable Long itemId, @ModelAttribute Item item) {
-        validationItemRepository.update(itemId, item);
+    public String edit(@PathVariable Long itemId, @ModelAttribute ItemV itemV) {
+        validationItemRepository.update(itemId, itemV);
         return "redirect:/validation/v1/items/{itemId}";
     }
 

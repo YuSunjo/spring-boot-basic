@@ -1,6 +1,6 @@
 package com.example.springbasic.mvc_2.web.validation;
 
-import com.example.springbasic.mvc_2.domain.validation.Item;
+import com.example.springbasic.mvc_2.domain.validation.ItemV;
 import com.example.springbasic.mvc_2.domain.validation.ValidationItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,41 +33,41 @@ public class ValidationItemControllerV2 {
 
     @GetMapping
     public String items(Model model) {
-        List<Item> items = validationItemRepository.findAll();
-        model.addAttribute("items", items);
+        List<ItemV> itemVS = validationItemRepository.findAll();
+        model.addAttribute("items", itemVS);
         return "validation/v2/items";
     }
 
     @GetMapping("/{itemId}")
     public String item(@PathVariable long itemId, Model model) {
-        Item item = validationItemRepository.findById(itemId);
-        model.addAttribute("item", item);
+        ItemV itemV = validationItemRepository.findById(itemId);
+        model.addAttribute("item", itemV);
         return "validation/v2/item";
     }
 
     @GetMapping("/add")
     public String addForm(Model model) {
-        model.addAttribute("item", new Item());
+        model.addAttribute("item", new ItemV());
         return "validation/v2/addForm";
     }
 
 //    @PostMapping("/add")
-    public String addItemV1(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+    public String addItemV1(@ModelAttribute ItemV itemV, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         //검증 로직
-        if (!StringUtils.hasText(item.getItemName())) {
+        if (!StringUtils.hasText(itemV.getItemName())) {
             bindingResult.addError(new FieldError("item", "itemName", "상품 이름은 필수 입니다."));
         }
-        if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) {
+        if (itemV.getPrice() == null || itemV.getPrice() < 1000 || itemV.getPrice() > 1000000) {
             bindingResult.addError(new FieldError("item", "price", "가격은 1,000 ~ 1,000,000 까지 허용합니다."));
         }
-        if (item.getQuantity() == null || item.getQuantity() >= 9999) {
+        if (itemV.getQuantity() == null || itemV.getQuantity() >= 9999) {
             bindingResult.addError(new FieldError("item", "quantity", "수량은 최대 9,999 까지 허용합니다."));
         }
 
         //특정 필드가 아닌 복합 룰 검증
-        if (item.getPrice() != null && item.getQuantity() != null) {
-            int resultPrice = item.getPrice() * item.getQuantity();
+        if (itemV.getPrice() != null && itemV.getQuantity() != null) {
+            int resultPrice = itemV.getPrice() * itemV.getQuantity();
             if (resultPrice < 10000) {
                 bindingResult.addError(new ObjectError("item", "가격 * 수량의 합은 10,000원 이상이어야 합니다. 현재 값 = " + resultPrice));
             }
@@ -80,29 +80,29 @@ public class ValidationItemControllerV2 {
         }
 
         //성공 로직
-        Item savedItem = validationItemRepository.save(item);
-        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        ItemV savedItemV = validationItemRepository.save(itemV);
+        redirectAttributes.addAttribute("itemId", savedItemV.getId());
         redirectAttributes.addAttribute("status", true);
         return "redirect:/validation/v2/items/{itemId}";
     }
 
 //    @PostMapping("/add")
-    public String addItemV2(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+    public String addItemV2(@ModelAttribute ItemV itemV, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         //검증 로직
-        if (!StringUtils.hasText(item.getItemName())) {
-            bindingResult.addError(new FieldError("item", "itemName", item.getItemName(), false, null, null, "상품 이름은 필수 입니다."));
+        if (!StringUtils.hasText(itemV.getItemName())) {
+            bindingResult.addError(new FieldError("item", "itemName", itemV.getItemName(), false, null, null, "상품 이름은 필수 입니다."));
         }
-        if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) {
-            bindingResult.addError(new FieldError("item", "price", item.getPrice(), false, null, null, "가격은 1,000 ~ 1,000,000 까지 허용합니다."));
+        if (itemV.getPrice() == null || itemV.getPrice() < 1000 || itemV.getPrice() > 1000000) {
+            bindingResult.addError(new FieldError("item", "price", itemV.getPrice(), false, null, null, "가격은 1,000 ~ 1,000,000 까지 허용합니다."));
         }
-        if (item.getQuantity() == null || item.getQuantity() >= 9999) {
-            bindingResult.addError(new FieldError("item", "quantity", item.getQuantity(), false, null ,null, "수량은 최대 9,999 까지 허용합니다."));
+        if (itemV.getQuantity() == null || itemV.getQuantity() >= 9999) {
+            bindingResult.addError(new FieldError("item", "quantity", itemV.getQuantity(), false, null ,null, "수량은 최대 9,999 까지 허용합니다."));
         }
 
         //특정 필드가 아닌 복합 룰 검증
-        if (item.getPrice() != null && item.getQuantity() != null) {
-            int resultPrice = item.getPrice() * item.getQuantity();
+        if (itemV.getPrice() != null && itemV.getQuantity() != null) {
+            int resultPrice = itemV.getPrice() * itemV.getQuantity();
             if (resultPrice < 10000) {
                 bindingResult.addError(new ObjectError("item",null ,null, "가격 * 수량의 합은 10,000원 이상이어야 합니다. 현재 값 = " + resultPrice));
             }
@@ -115,29 +115,29 @@ public class ValidationItemControllerV2 {
         }
 
         //성공 로직
-        Item savedItem = validationItemRepository.save(item);
-        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        ItemV savedItemV = validationItemRepository.save(itemV);
+        redirectAttributes.addAttribute("itemId", savedItemV.getId());
         redirectAttributes.addAttribute("status", true);
         return "redirect:/validation/v2/items/{itemId}";
     }
 
 //    @PostMapping("/add")
-    public String addItemV3(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+    public String addItemV3(@ModelAttribute ItemV itemV, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         //검증 로직
-        if (!StringUtils.hasText(item.getItemName())) {
-            bindingResult.addError(new FieldError("item", "itemName", item.getItemName(), false, new String[]{"required.item.itemName"}, null, null));
+        if (!StringUtils.hasText(itemV.getItemName())) {
+            bindingResult.addError(new FieldError("item", "itemName", itemV.getItemName(), false, new String[]{"required.item.itemName"}, null, null));
         }
-        if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) {
-            bindingResult.addError(new FieldError("item", "price", item.getPrice(), false, new String[]{"range.item.price"}, new Object[]{1000, 1000000}, null));
+        if (itemV.getPrice() == null || itemV.getPrice() < 1000 || itemV.getPrice() > 1000000) {
+            bindingResult.addError(new FieldError("item", "price", itemV.getPrice(), false, new String[]{"range.item.price"}, new Object[]{1000, 1000000}, null));
         }
-        if (item.getQuantity() == null || item.getQuantity() >= 9999) {
-            bindingResult.addError(new FieldError("item", "quantity", item.getQuantity(), false, new String[]{"max.item.quantity"} ,new Object[]{9999}, null));
+        if (itemV.getQuantity() == null || itemV.getQuantity() >= 9999) {
+            bindingResult.addError(new FieldError("item", "quantity", itemV.getQuantity(), false, new String[]{"max.item.quantity"} ,new Object[]{9999}, null));
         }
 
         //특정 필드가 아닌 복합 룰 검증
-        if (item.getPrice() != null && item.getQuantity() != null) {
-            int resultPrice = item.getPrice() * item.getQuantity();
+        if (itemV.getPrice() != null && itemV.getQuantity() != null) {
+            int resultPrice = itemV.getPrice() * itemV.getQuantity();
             if (resultPrice < 10000) {
                 bindingResult.addError(new ObjectError("item",new String[]{"totalPriceMin"} ,new Object[]{10000, resultPrice}, null));
             }
@@ -150,31 +150,31 @@ public class ValidationItemControllerV2 {
         }
 
         //성공 로직
-        Item savedItem = validationItemRepository.save(item);
-        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        ItemV savedItemV = validationItemRepository.save(itemV);
+        redirectAttributes.addAttribute("itemId", savedItemV.getId());
         redirectAttributes.addAttribute("status", true);
         return "redirect:/validation/v2/items/{itemId}";
     }
 
 //    @PostMapping("/add")
-    public String addItemV4(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+    public String addItemV4(@ModelAttribute ItemV itemV, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         log.info("objectName={}", bindingResult.getObjectName());
         log.info("target={}", bindingResult.getTarget());
 
-        if (!StringUtils.hasText(item.getItemName())) {
+        if (!StringUtils.hasText(itemV.getItemName())) {
             bindingResult.rejectValue("itemName", "required");
         }
-        if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) {
+        if (itemV.getPrice() == null || itemV.getPrice() < 1000 || itemV.getPrice() > 1000000) {
             bindingResult.rejectValue("price", "range", new Object[]{1000, 10000000}, null);
         }
-        if (item.getQuantity() == null || item.getQuantity() >= 9999) {
+        if (itemV.getQuantity() == null || itemV.getQuantity() >= 9999) {
             bindingResult.rejectValue("quantity", "max", new Object[]{9999}, null);
         }
 
         //특정 필드가 아닌 복합 룰 검증
-        if (item.getPrice() != null && item.getQuantity() != null) {
-            int resultPrice = item.getPrice() * item.getQuantity();
+        if (itemV.getPrice() != null && itemV.getQuantity() != null) {
+            int resultPrice = itemV.getPrice() * itemV.getQuantity();
             if (resultPrice < 10000) {
                 bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
             }
@@ -187,16 +187,16 @@ public class ValidationItemControllerV2 {
         }
 
         //성공 로직
-        Item savedItem = validationItemRepository.save(item);
-        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        ItemV savedItemV = validationItemRepository.save(itemV);
+        redirectAttributes.addAttribute("itemId", savedItemV.getId());
         redirectAttributes.addAttribute("status", true);
         return "redirect:/validation/v2/items/{itemId}";
     }
 
 //    @PostMapping("/add")
-    public String addItemV5(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+    public String addItemV5(@ModelAttribute ItemV itemV, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
-        itemValidator.validate(item, bindingResult);
+        itemValidator.validate(itemV, bindingResult);
 
         //검증에 실패하면 다시 입력 폼으로
         if (bindingResult.hasErrors()) {
@@ -205,14 +205,14 @@ public class ValidationItemControllerV2 {
         }
 
         //성공 로직
-        Item savedItem = validationItemRepository.save(item);
-        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        ItemV savedItemV = validationItemRepository.save(itemV);
+        redirectAttributes.addAttribute("itemId", savedItemV.getId());
         redirectAttributes.addAttribute("status", true);
         return "redirect:/validation/v2/items/{itemId}";
     }
 
     @PostMapping("/add")
-    public String addItemV6(@Validated @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+    public String addItemV6(@Validated @ModelAttribute ItemV itemV, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         //검증에 실패하면 다시 입력 폼으로
         if (bindingResult.hasErrors()) {
@@ -221,22 +221,22 @@ public class ValidationItemControllerV2 {
         }
 
         //성공 로직
-        Item savedItem = validationItemRepository.save(item);
-        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        ItemV savedItemV = validationItemRepository.save(itemV);
+        redirectAttributes.addAttribute("itemId", savedItemV.getId());
         redirectAttributes.addAttribute("status", true);
         return "redirect:/validation/v2/items/{itemId}";
     }
 
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
-        Item item = validationItemRepository.findById(itemId);
-        model.addAttribute("item", item);
+        ItemV itemV = validationItemRepository.findById(itemId);
+        model.addAttribute("item", itemV);
         return "validation/v2/editForm";
     }
 
     @PostMapping("/{itemId}/edit")
-    public String edit(@PathVariable Long itemId, @ModelAttribute Item item) {
-        validationItemRepository.update(itemId, item);
+    public String edit(@PathVariable Long itemId, @ModelAttribute ItemV itemV) {
+        validationItemRepository.update(itemId, itemV);
         return "redirect:/validation/v2/items/{itemId}";
     }
 

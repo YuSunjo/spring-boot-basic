@@ -1,6 +1,6 @@
 package com.example.springbasic.mvc_2.web.validation;
 
-import com.example.springbasic.mvc_2.domain.validation.Item;
+import com.example.springbasic.mvc_2.domain.validation.ItemV;
 import com.example.springbasic.mvc_2.domain.validation.ValidationItemRepository;
 import com.example.springbasic.mvc_2.domain.validation.SaveCheck;
 import com.example.springbasic.mvc_2.domain.validation.UpdateCheck;
@@ -13,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -26,30 +25,30 @@ public class ValidationItemControllerV3 {
 
     @GetMapping
     public String items(Model model) {
-        List<Item> items = validationItemRepository.findAll();
-        model.addAttribute("items", items);
+        List<ItemV> itemVS = validationItemRepository.findAll();
+        model.addAttribute("items", itemVS);
         return "validation/v3/items";
     }
 
     @GetMapping("/{itemId}")
     public String item(@PathVariable long itemId, Model model) {
-        Item item = validationItemRepository.findById(itemId);
-        model.addAttribute("item", item);
+        ItemV itemV = validationItemRepository.findById(itemId);
+        model.addAttribute("item", itemV);
         return "validation/v3/item";
     }
 
     @GetMapping("/add")
     public String addForm(Model model) {
-        model.addAttribute("item", new Item());
+        model.addAttribute("item", new ItemV());
         return "validation/v3/addForm";
     }
 
 //    @PostMapping("/add")
-    public String addItem(@Validated @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+    public String addItem(@Validated @ModelAttribute ItemV itemV, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         //특정 필드가 아닌 복합 룰 검증
-        if (item.getPrice() != null && item.getQuantity() != null) {
-            int resultPrice = item.getPrice() * item.getQuantity();
+        if (itemV.getPrice() != null && itemV.getQuantity() != null) {
+            int resultPrice = itemV.getPrice() * itemV.getQuantity();
             if (resultPrice < 10000) {
                 bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
             }
@@ -62,18 +61,18 @@ public class ValidationItemControllerV3 {
         }
 
         //성공 로직
-        Item savedItem = validationItemRepository.save(item);
-        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        ItemV savedItemV = validationItemRepository.save(itemV);
+        redirectAttributes.addAttribute("itemId", savedItemV.getId());
         redirectAttributes.addAttribute("status", true);
         return "redirect:/validation/v3/items/{itemId}";
     }
 
     @PostMapping("/add")
-    public String addItem2(@Validated(SaveCheck.class) @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String addItem2(@Validated(SaveCheck.class) @ModelAttribute ItemV itemV, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         //특정 필드가 아닌 복합 룰 검증
-        if (item.getPrice() != null && item.getQuantity() != null) {
-            int resultPrice = item.getPrice() * item.getQuantity();
+        if (itemV.getPrice() != null && itemV.getQuantity() != null) {
+            int resultPrice = itemV.getPrice() * itemV.getQuantity();
             if (resultPrice < 10000) {
                 bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
             }
@@ -86,25 +85,25 @@ public class ValidationItemControllerV3 {
         }
 
         //성공 로직
-        Item savedItem = validationItemRepository.save(item);
-        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        ItemV savedItemV = validationItemRepository.save(itemV);
+        redirectAttributes.addAttribute("itemId", savedItemV.getId());
         redirectAttributes.addAttribute("status", true);
         return "redirect:/validation/v3/items/{itemId}";
     }
 
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
-        Item item = validationItemRepository.findById(itemId);
-        model.addAttribute("item", item);
+        ItemV itemV = validationItemRepository.findById(itemId);
+        model.addAttribute("item", itemV);
         return "validation/v3/editForm";
     }
 
 //    @PostMapping("/{itemId}/edit")
-    public String edit(@PathVariable Long itemId, @Validated @ModelAttribute Item item, BindingResult bindingResult) {
+    public String edit(@PathVariable Long itemId, @Validated @ModelAttribute ItemV itemV, BindingResult bindingResult) {
 
         //특정 필드가 아닌 복합 룰 검증
-        if (item.getPrice() != null && item.getQuantity() != null) {
-            int resultPrice = item.getPrice() * item.getQuantity();
+        if (itemV.getPrice() != null && itemV.getQuantity() != null) {
+            int resultPrice = itemV.getPrice() * itemV.getQuantity();
             if (resultPrice < 10000) {
                 bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
             }
@@ -115,16 +114,16 @@ public class ValidationItemControllerV3 {
             return "validation/v3/editForm";
         }
 
-        validationItemRepository.update(itemId, item);
+        validationItemRepository.update(itemId, itemV);
         return "redirect:/validation/v3/items/{itemId}";
     }
 
     @PostMapping("/{itemId}/edit")
-    public String editV2(@PathVariable Long itemId, @Validated(UpdateCheck.class) @ModelAttribute Item item, BindingResult bindingResult) {
+    public String editV2(@PathVariable Long itemId, @Validated(UpdateCheck.class) @ModelAttribute ItemV itemV, BindingResult bindingResult) {
 
         //특정 필드가 아닌 복합 룰 검증
-        if (item.getPrice() != null && item.getQuantity() != null) {
-            int resultPrice = item.getPrice() * item.getQuantity();
+        if (itemV.getPrice() != null && itemV.getQuantity() != null) {
+            int resultPrice = itemV.getPrice() * itemV.getQuantity();
             if (resultPrice < 10000) {
                 bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
             }
@@ -135,7 +134,7 @@ public class ValidationItemControllerV3 {
             return "validation/v3/editForm";
         }
 
-        validationItemRepository.update(itemId, item);
+        validationItemRepository.update(itemId, itemV);
         return "redirect:/validation/v3/items/{itemId}";
     }
 

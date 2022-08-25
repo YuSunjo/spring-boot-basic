@@ -10,28 +10,28 @@ import java.util.Map;
 @Repository
 public class ValidationItemRepository {
 
-    private static final Map<Long, Item> store = new HashMap<>(); //static
+    private static final Map<Long, ItemV> store = new HashMap<>(); //static
     private static long sequence = 0L; //static
 
-    public Item save(Item item) {
-        item.setId(++sequence);
-        store.put(item.getId(), item);
-        return item;
+    public ItemV save(ItemV itemV) {
+        itemV.setId(++sequence);
+        store.put(itemV.getId(), itemV);
+        return itemV;
     }
 
-    public Item findById(Long id) {
+    public ItemV findById(Long id) {
         return store.get(id);
     }
 
-    public List<Item> findAll() {
+    public List<ItemV> findAll() {
         return new ArrayList<>(store.values());
     }
 
-    public void update(Long itemId, Item updateParam) {
-        Item findItem = findById(itemId);
-        findItem.setItemName(updateParam.getItemName());
-        findItem.setPrice(updateParam.getPrice());
-        findItem.setQuantity(updateParam.getQuantity());
+    public void update(Long itemId, ItemV updateParam) {
+        ItemV findItemV = findById(itemId);
+        findItemV.setItemName(updateParam.getItemName());
+        findItemV.setPrice(updateParam.getPrice());
+        findItemV.setQuantity(updateParam.getQuantity());
     }
 
     public void clearStore() {

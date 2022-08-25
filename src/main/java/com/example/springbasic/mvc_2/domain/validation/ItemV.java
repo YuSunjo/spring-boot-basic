@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class Item {
+public class ItemV {
 
     @NotNull(groups = UpdateCheck.class) //수정 요구사항 추가
     private Long id;
@@ -21,10 +21,10 @@ public class Item {
 //    @Max(value = 9999, groups = {SaveCheck.class})
     private Integer quantity;
 
-    public Item() {
+    public ItemV() {
     }
 
-    public Item(String itemName, Integer price, Integer quantity) {
+    public ItemV(String itemName, Integer price, Integer quantity) {
         this.itemName = itemName;
         this.price = price;
         this.quantity = quantity;

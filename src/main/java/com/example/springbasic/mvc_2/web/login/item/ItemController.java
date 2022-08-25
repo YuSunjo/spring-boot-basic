@@ -1,9 +1,9 @@
-package com.example.springbasic.mvc_2.web.validation;
+package com.example.springbasic.mvc_2.web.login.item;
 
-import com.example.springbasic.mvc_2.domain.validation.ItemV;
-import com.example.springbasic.mvc_2.domain.validation.ValidationItemRepository;
-import com.example.springbasic.mvc_2.web.validation.form.ItemSaveForm;
-import com.example.springbasic.mvc_2.web.validation.form.ItemUpdateForm;
+import com.example.springbasic.mvc_2.domain.login.item.Item;
+import com.example.springbasic.mvc_2.domain.login.item.ItemRepository;
+import com.example.springbasic.mvc_2.web.login.item.form.ItemSaveForm;
+import com.example.springbasic.mvc_2.web.login.item.form.ItemUpdateForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -17,72 +17,36 @@ import java.util.List;
 
 @Slf4j
 @Controller
-@RequestMapping("/validation/v4/items")
+@RequestMapping("/items")
 @RequiredArgsConstructor
-public class ValidationItemControllerV4 {
+public class ItemController {
 
-    private final ValidationItemRepository validationItemRepository;
+    private final ItemRepository itemRepository;
 
     @GetMapping
     public String items(Model model) {
-        List<ItemV> itemVS = validationItemRepository.findAll();
-        model.addAttribute("items", itemVS);
-        return "validation/v4/items";
+        List<Item> items = itemRepository.findAll();
+        model.addAttribute("items", items);
+        return "items/items";
     }
 
     @GetMapping("/{itemId}")
     public String item(@PathVariable long itemId, Model model) {
-        ItemV itemV = validationItemRepository.findById(itemId);
-        model.addAttribute("item", itemV);
-        return "validation/v4/item";
+        Item item = itemRepository.findById(itemId);
+        model.addAttribute("item", item);
+        return "items/item";
     }
 
     @GetMapping("/add")
     public String addForm(Model model) {
-        model.addAttribute("item", new ItemV());
-        return "validation/v4/addForm";
+        model.addAttribute("item", new Item());
+        return "items/addForm";
     }
 
     @PostMapping("/add")
     public String addItem(@Validated @ModelAttribute("item") ItemSaveForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
-        //특정 필드가 아닌 복합 룰 검증
-        if (form.getPrice() != null && form.getQuantity() != null) {
-            int resultPrice = form.getPrice() * form.getQuantity();
-            if (resultPrice < 10000) {
-                bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
-            }
-        }
-
-        //검증에 실패하면 다시 입력 폼으로
-        if (bindingResult.hasErrors()) {
-            log.info("errors={} ", bindingResult);
-            return "validation/v4/addForm";
-        }
-
-        //성공 로직
-        ItemV itemV = new ItemV();
-        itemV.setItemName(form.getItemName());
-        itemV.setPrice(form.getPrice());
-        itemV.setQuantity(form.getQuantity());
-
-        ItemV savedItemV = validationItemRepository.save(itemV);
-        redirectAttributes.addAttribute("itemId", savedItemV.getId());
-        redirectAttributes.addAttribute("status", true);
-        return "redirect:/validation/v4/items/{itemId}";
-    }
-
-    @GetMapping("/{itemId}/edit")
-    public String editForm(@PathVariable Long itemId, Model model) {
-        ItemV itemV = validationItemRepository.findById(itemId);
-        model.addAttribute("item", itemV);
-        return "validation/v4/editForm";
-    }
-
-    @PostMapping("/{itemId}/edit")
-    public String edit(@PathVariable Long itemId, @Validated @ModelAttribute("item") ItemUpdateForm form, BindingResult bindingResult) {
-
-        //특정 필드가 아닌 복합 룰 검증
+        //특정 필드 예외가 아닌 전체 예외
         if (form.getPrice() != null && form.getQuantity() != null) {
             int resultPrice = form.getPrice() * form.getQuantity();
             if (resultPrice < 10000) {
@@ -92,17 +56,51 @@ public class ValidationItemControllerV4 {
 
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
-            return "validation/v4/editForm";
+            return "items/addForm";
         }
 
-        ItemV itemVParam = new ItemV();
-        itemVParam.setItemName(form.getItemName());
-        itemVParam.setPrice(form.getPrice());
-        itemVParam.setQuantity(form.getQuantity());
+        //성공 로직
+        Item item = new Item();
+        item.setItemName(form.getItemName());
+        item.setPrice(form.getPrice());
+        item.setQuantity(form.getQuantity());
 
-        validationItemRepository.update(itemId, itemVParam);
-        return "redirect:/validation/v4/items/{itemId}";
+        Item savedItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/items/{itemId}";
+    }
+
+    @GetMapping("/{itemId}/edit")
+    public String editForm(@PathVariable Long itemId, Model model) {
+        Item item = itemRepository.findById(itemId);
+        model.addAttribute("item", item);
+        return "items/editForm";
+    }
+
+    @PostMapping("/{itemId}/edit")
+    public String edit(@PathVariable Long itemId, @Validated @ModelAttribute("item") ItemUpdateForm form, BindingResult bindingResult) {
+
+        //특정 필드 예외가 아닌 전체 예외
+        if (form.getPrice() != null && form.getQuantity() != null) {
+            int resultPrice = form.getPrice() * form.getQuantity();
+            if (resultPrice < 10000) {
+                bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
+            }
+        }
+
+        if (bindingResult.hasErrors()) {
+            log.info("errors={}", bindingResult);
+            return "items/editForm";
+        }
+
+        Item itemParam = new Item();
+        itemParam.setItemName(form.getItemName());
+        itemParam.setPrice(form.getPrice());
+        itemParam.setQuantity(form.getQuantity());
+
+        itemRepository.update(itemId, itemParam);
+        return "redirect:/items/{itemId}";
     }
 
 }
-
