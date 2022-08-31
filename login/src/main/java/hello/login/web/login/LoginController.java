@@ -2,6 +2,7 @@ package hello.login.web.login;
 
 import hello.login.domain.login.LoginService;
 import hello.login.domain.member.Member;
+import hello.login.web.session.SessionManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,7 @@ import javax.validation.Valid;
 public class LoginController {
 
     private final LoginService loginService;
+    private final SessionManager sessionManager;
 
     @GetMapping("/login")
     public String loginForm(@ModelAttribute("loginForm") LoginForm form) {
@@ -67,7 +69,7 @@ public class LoginController {
         //로그인 성공 처리
 
         //세션 관리자를 통해 세션을 생성하고, 회원 데이터 보관
-//        sessionManager.createSession(loginMember, response);
+        sessionManager.createSession(loginMember, response);
 
         return "redirect:/";
 
